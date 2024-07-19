@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAAL Metrics Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .chart-container {
+            margin-bottom: 40px;
+        }
+        .chart {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>PAAL Metrics Dashboard</h1>
+    <div class="chart-container">
+        <div class="chart">
+            <canvas id="paalPriceChart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="paalLiquidityChart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="ethLiquidityChart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="totalRewardsChart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="totalStakedUsersChart"></canvas>
+        </div>
+    </div>
+</div>
+<script src="paal-metrics-data.js"></script>
+<script>
+    // Utility function to format dates
+    function formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString();
+    }
+
+    // Function to create charts
+    function createCharts(data) {
+        // Create PAAL Price Chart
+        new Chart(document.getElementById('paalPriceChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: data.map(entry => formatDate(entry.date)),
+                datasets: [{
+                    label: 'PAAL Price (USD)',
+                    data: data.map(entry => parseFloat(entry.paalPriceInUsd)),
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'PAAL Price Over Time'
+                    }
+                }
+            }
+        });
+
+        // Create PAAL Liquidity Chart
+        new Chart(document.getElementById('paalLiquidityChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: data.map(entry => formatDate(entry.date)),
+                datasets: [{
+                    label: 'PAAL Liquidity',
+                    data: data.map(entry => parseFloat(entry.paal)),
+                    borderColor: 'rgb(255, 99, 132)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'PAAL Liquidity Over Time'
+                    }
+                }
+            }
+        });
+
+        // Create ETH Liquidity Chart
+        new Chart(document.getElementById('ethLiquidityChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: data.map(entry => formatDate(entry.date)),
+                datasets: [{
+                    label: 'ETH Liquidity',
+                    data: data.map(entry => parseFloat(entry.eth)),
+                    borderColor: 'rgb(54, 162, 235)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'ETH Liquidity Over Time'
+                    }
+                }
+            }
+        });
+
+        // Create Total Rewards Chart
+        new Chart(document.getElementById('totalRewardsChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: data.map(entry => formatDate(entry.date)),
+                datasets: [{
+                    label: 'Total Rewards',
+                    data: data.map(entry => parseFloat(entry.totalRewards)),
+                    borderColor: 'rgb(255, 159, 64)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Total Rewards Over Time'
+                    }
+                }
+            }
+        });
+
+        // Create Total Staked Users Chart
+        new Chart(document.getElementById('totalStakedUsersChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: data.map(entry => formatDate(entry.date)),
+                datasets: [{
+                    label: 'Total Staked Users',
+                    data: data.map(entry => entry.totalStakedUsers),
+                    borderColor: 'rgb(153, 102, 255)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Total Staked Users Over Time'
+                    }
+                }
+            }
+        });
+    }
+
+    // Create charts with the data from the external JS file
+    createCharts(paalMetricsData);
+</script>
+</body>
+</html>
